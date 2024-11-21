@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<launch>
+  <arg name="debug" default="True"/>  <!-- 启用调试模式，默认值为True -->
+  <arg name="yolo_model" default="yolov8n-seg.pt"/>  <!-- YOLO模型文件名，默认使用yolov8m-seg.pt -->
+  <arg name="input_topic" default="/kitti/camera_color_left/image_raw"/>  <!-- 输入图像话题 -->
+  <arg name="result_topic" default="/yolo_result"/>  <!-- YOLO检测结果话题 -->
+  <arg name="result_image_topic" default="/yolo_image"/>  <!-- YOLO结果图像话题 -->
+  <arg name="conf_thres" default="0.25"/>  <!-- 置信度阈值，默认值为0.25 -->
+  <arg name="iou_thres" default="0.45"/>  <!-- IoU（交并比）阈值，默认值为0.45 -->
+  <arg name="max_det" default="300"/>  <!-- 最大检测数，默认值为300 -->
+  <arg name="classes" default="2"/>  <!-- 类别ID，默认值为空，表示检测所有类别 -->
+  <arg name="tracker" default="/home/zhurui/yolo_ws/src/ultralytics_ros/cfg/botsort.yaml"/>  <!-- 跟踪器配置文件，默认值为bytetrack.yaml -->
+  <arg name="device" default="0"/>  <!-- 设备编号，默认值为0 -->
+  <arg name="result_conf" default="true"/>  <!-- 是否显示结果置信度，默认值为true -->
+  <arg name="result_line_width" default="1"/>  <!-- 结果线宽，默认值为1 -->
+  <arg name="result_font_size" default="1"/>  <!-- 结果字体大小，默认值为1 -->
+  <arg name="result_font" default="Arial.ttf"/>  <!-- 结果字体，默认值为Arial.ttf -->
+  <arg name="result_labels" default="true"/>  <!-- 是否显示结果标签，默认值为true -->
+  <arg name="result_boxes" default="true"/>  <!-- 是否显示结果框，默认值为true -->
+
+  <arg name="camera_info_topic" default="/kitti/camera_color_left/camera_info"/>  <!-- 摄像头信息话题 -->
+  <arg name="lidar_topic" default="/kitti/velo/pointcloud"/>  <!-- 激光雷达话题 -->
+  <arg name="yolo_3d_result_topic" default="/yolo_3d_result"/>  <!-- YOLO 3D结果话题 -->
+  <arg name="cluster_tolerance" default="0.3"/>  <!-- 聚类容忍度，默认值为0.3 -->
+  <arg name="voxel_leaf_size" default="0.1"/>  <!-- 体素叶子大小，默认值为0.1 -->
+  <arg name="min_cluster_size" default="100"/>  <!-- 最小聚类大小，默认值为100 -->
+  <arg name="max_cluster_size" default="10000"/>  <!-- 最大聚类大小，默认值为10000 -->
+
+  <node name="tracker_node" pkg="ultralytics_ros" type="tracker_node.py" output="screen">
+    <param name="yolo_model" value="$(arg yolo_model)"/>  <!-- YOLO模型 -->
+    <param name="input_topic" value="$(arg input_topic)"/>  <!-- 输入话题 -->
+    <param name="result_topic" value="$(arg result_topic)"/>  <!-- 结果话题 -->
+    <param name="result_image_topic" value="$(arg result_image_topic)"/>  <!-- 结果图像话题 -->
+    <param name="conf_thres" value="$(arg conf_thres)"/>  <!-- 置信度阈值 -->
+    <param name="iou_thres" value="$(arg iou_thres)"/>  <!-- IoU阈值 -->
+    <param name="max_det" value="$(arg max_det)"/>  <!-- 最大检测数 -->
+    <param name="tracker" value="$(arg tracker)"/>  <!-- 跟踪器配置 -->
+    <param name="result_conf" value="$(arg result_conf)"/>  <!-- 显示结果置信度 -->
+    <param name="result_line_width" value="$(arg result_line_width)"/>  <!-- 结果线宽 -->
+    <param name="result_font_size" value="$(arg result_font_size)"/>  <!-- 结果字体大小 -->
+    <param name="result_font" value="$(arg result_font)"/>  <!-- 结果字体 -->
+    <param name="result_labels" value="$(arg result_labels)"/>  <!-- 显示结果标签 -->
+    <param name="result_boxes" value="$(arg result_boxes)"/>  <!-- 显示结果框 -->
+    <rosparam param="classes" subst_value="true">$(arg classes)</rosparam>  <!-- 类别ID -->
+    <rosparam param="device" subst_value="true">$(arg device)</rosparam>  <!-- 设备编号 -->
+  </node>
+
+  <node name="tracker_with_cloud_node" pkg="ultralytics_ros" type="tracker_with_cloud_node" output="screen">
+    <param name="camera_info_topic" value="$(arg camera_info_topic)"/>  <!-- 摄像头信息话题 -->
+    <param name="lidar_topic" value="$(arg lidar_topic)"/>  <!-- 激光雷达话题 -->
+    <param name="yolo_result_topic" value="$(arg result_topic)"/>  <!-- YOLO结果话题 -->
+    <param name="yolo_3d_result_topic" value="$(arg yolo_3d_result_topic)"/>  <!-- YOLO 3D结果话题 -->
+    <param name="cluster_tolerance" value="$(arg cluster_tolerance)"/>  <!-- 聚类容忍度 -->
+    <param name="voxel_leaf_size" value="$(arg voxel_leaf_size)"/>  <!-- 体素叶子大小 -->
+    <param name="min_cluster_size" value="$(arg min_cluster_size)"/>  <!-- 最小聚类大小 -->
+    <param name="max_cluster_size" value="$(arg max_cluster_size)"/>  <!-- 最大聚类大小 -->
+  </node>
+
+  <node if="$(arg debug)" pkg="rviz" type="rviz" name="rviz" args="-d $(find ultralytics_ros)/rviz/kitti.rviz"/>  <!-- 启动rviz可视化工具，调试模式下 -->
+</launch>

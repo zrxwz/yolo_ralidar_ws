@@ -1,0 +1,33 @@
+# Ultralytics YOLO 🚀, AGPL-3.0 license
+# BoT-SORT 跟踪器默认配置文件
+# 更多信息参考：https://github.com/NirAharon/BoT-SORT
+
+tracker_type: botsort # 跟踪器类型，可选值 ['botsort', 'bytetrack']
+
+# 第一阶段匹配的高置信度阈值，值越高只匹配置信度较高的检测结果。
+track_high_thresh: 0.5 
+
+# 第二阶段匹配的低置信度阈值，值越低允许置信度较低的检测参与匹配。
+track_low_thresh: 0.1 
+
+# 初始化新轨迹的置信度阈值，值越高新轨迹的生成越严格。
+new_track_thresh: 0.6 
+
+# 轨迹缓冲时间（帧数），决定轨迹丢失后保留的时间，用于等待重新匹配。
+track_buffer: 30 
+
+# 匹配轨迹的相似性阈值，值越高匹配越严格，可以减少误匹配。
+match_thresh: 0.8 
+
+# 以下参数默认注释，仅在评估任务中使用
+# min_box_area: 10  # 检测框的最小面积，用于过滤小目标
+# mot20: False  # 是否启用 MOT20 数据集评估模式
+
+# BoT-SORT 特有参数
+gmc_method: sparseOptFlow # 全局运动补偿方法，默认使用稀疏光流（sparseOptFlow）
+
+# 以下参数与 ReID 模块相关（目前未支持）
+proximity_thresh: 0.5 # 距离匹配的空间位置阈值，值越小要求目标间距离越近
+appearance_thresh: 0.25 # 外观特征匹配阈值，值越小表示要求外观更相似
+with_reid: False # 是否启用 ReID（目标再识别）模块，默认关闭
+fuse_score: False # 新增此参数，防止报错
