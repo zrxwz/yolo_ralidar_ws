@@ -88,3 +88,7 @@ install(TARGETS tracker_with_cloud_node
 install(DIRECTORY include
   DESTINATION ${CATKIN_PACKAGE_INCLUDE_DESTINATION}
 )
+add_executable(yolo_with_cloud_node src/yolo_with_cloud_node.cpp)
+target_link_libraries(yolo_with_cloud_node ${catkin_LIBRARIES})
+install(TARGETS yolo_with_cloud_node RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION})
+

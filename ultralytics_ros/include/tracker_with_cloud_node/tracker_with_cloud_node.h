@@ -62,6 +62,8 @@ private:
   ros::Publisher detection_cloud_pub_;
   ros::Publisher detection3d_pub_;
   ros::Publisher marker_pub_;
+  // 在类定义中添加一个新的发布者
+  ros::Publisher target_position_pub_;
   ros::Time last_call_time_;
   message_filters::Subscriber<sensor_msgs::CameraInfo> camera_info_sub_;
   message_filters::Subscriber<sensor_msgs::PointCloud2> lidar_sub_;
